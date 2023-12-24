@@ -131,6 +131,9 @@ class Logger():
         Logger._initialized = True
         self.log_info(f"{self.logger_name} initialized.")
 
+    def __repr__(self):
+        return f'Logger(name={self.logger_name}, console_log_level={self.console_log_level}, use_file_log={self.use_file_log})'
+
     def log_debug(self, txt: str, *args, **kwargs):
         self.logger.debug(txt, *args, **kwargs)
 
