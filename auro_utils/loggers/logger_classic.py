@@ -1,24 +1,44 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-# Copyright © 2023 Auromix.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# You may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Description: Logger class for console and file log.
-# Author: Herman Ye
+
+###############################################################################
+# Copyright © 2023 Auromix.                                                   #
+#                                                                             #
+# Licensed under the Apache License, Version 2.0 (the "License");             #
+# You may not use this file except in compliance with the License.            #
+# You may obtain a copy of the License at                                     #
+#                                                                             #
+#     http://www.apache.org/licenses/LICENSE-2.0                              #
+#                                                                             #
+# Unless required by applicable law or agreed to in writing, software         #
+# distributed under the License is distributed on an "AS IS" BASIS,           #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    #
+# See the License for the specific language governing permissions and         #
+# limitations under the License.                                              #
+#                                                                             #
+# Description: Classic logger class for console and file log.                 #
+# Author: Herman Ye                                                           #
+###############################################################################
+
+"""
+This module contains a Logger class for logging messages to the console and a file.
+
+The Logger class uses the singleton pattern to ensure that only one instance exists.
+It supports five levels of logging: debug, info, warning, error, and critical.
+The console log level can be set when creating a Logger instance.
+It also supports logging to a file, which can be enabled or disabled when creating a Logger instance.
+"""
+
 
 class Logger():
+    """
+    Logger class for logging messages to the console and a file.
+
+    This class uses the singleton pattern to ensure that only one instance exists.
+    It supports five levels of logging: debug, info, warning, error, and critical.
+    The console log level can be set when creating a Logger instance.
+    It also supports logging to a file, which can be enabled or disabled when creating a Logger instance.
+    """
     _instance = None
     _initialized = False
 
@@ -151,25 +171,3 @@ class Logger():
         self.logger.critical(txt, exc_info=exc_info,
                              stack_info=stack_info, *args, **kwargs)
 
-
-def main():
-    # Test logger
-    logger_test = Logger(console_log_level="debug")
-    logger_test.log_debug("test_debug")
-    logger_test.log_info("test_info")
-    logger_test.log_warning("test_warning")
-    logger_test.log_error("test_error")
-    logger_test.log_critical("test_critical")
-
-    # Test singleton pattern
-    logger_singleton_pattern_test = Logger(
-        console_log_level="warning", use_file_log=False)
-    logger_singleton_pattern_test.log_debug("test_debug again")
-    logger_singleton_pattern_test.log_info("test_info again")
-    logger_singleton_pattern_test.log_warning("test_warning again")
-    logger_singleton_pattern_test.log_error("test_error again")
-    logger_singleton_pattern_test.log_critical("test_critical again")
-
-
-if __name__ == "__main__":
-    main()
