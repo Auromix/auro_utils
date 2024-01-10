@@ -3,6 +3,11 @@
 Auro Utils is a utility package offering various practical supports for the Auromix application, such as enhanced logging capabilities and more.
 
 ## Install
+### Install from pip
+```bash
+pip install auro_utils
+```
+### Install from source
 
 ```bash
 git clone https://github.com/Auromix/auro_utils
