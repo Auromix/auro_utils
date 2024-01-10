@@ -29,8 +29,6 @@ setup(
     description="Auro Utils is a utility package offering various practical supports for the Auromix application, such as enhanced logging capabilities and more.",
     install_requires=requirements,
     license="Apache Software License 2.0",
-    long_description_content_type='text/markdown',
-    long_description=readme,
     include_package_data=True,
     keywords='auro_utils',
     name='auro_utils',
