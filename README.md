@@ -17,7 +17,7 @@ cd auro_utils
 python3 -m pytest -v .
 ```
 
-# Usage
+## Usage
 
 Following are some simplified examples of utilities offered by this package.
 
@@ -49,23 +49,23 @@ my_logger = Logger()
 my_logger.log_info("This is a info log test.")
 ```
 
-# Troubleshooting
+## Troubleshooting
 
-## ModuleNotFoundError
+### ModuleNotFoundError
 
 Make sure you have installed the package correctly. See [Install](#install) section.
 
-## Want to uninstall
+### Want to uninstall
 
 ```bash
 pip uninstall auro_utils
 ```
 
-# Contribute
+## Contribute
 
 Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
-# License
+## License
 
 ```text
  Copyright © 2023 Herman Ye@Auromix.

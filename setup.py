@@ -8,9 +8,9 @@ with open('README.md') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-  'colorlog ',
-  'loguru',
- ]
+    'colorlog ',
+    'loguru',
+]
 
 test_requirements = ['pytest>=3', ]
 
@@ -30,6 +30,7 @@ setup(
     install_requires=requirements,
     license="Apache Software License 2.0",
     long_description=readme,
+    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='auro_utils',
     name='auro_utils',
