@@ -30,6 +30,8 @@ setup(
     install_requires=requirements,
     license="Apache Software License 2.0",
     include_package_data=True,
+    long_description=readme,
+    long_description_content_type='text/markdown',
     keywords='auro_utils',
     name='auro_utils',
     packages=find_packages(include=['auro_utils', 'auro_utils.*']),
