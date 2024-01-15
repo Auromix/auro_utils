@@ -54,11 +54,11 @@ class Logger():
             return cls._instance
         # If the class instance is already created, return the created one
         else:
-            cls._instance.log_warning(
-                "Logger already exists!")
-            cls._instance.log_info(
+            cls._instance.log_debug(
+                "Logger already exists! Return the existing one.")
+            cls._instance.log_debug(
                 f"Set [console_log_level] to [{cls._instance.console_log_level}]")
-            cls._instance.log_info(
+            cls._instance.log_debug(
                 f"Set [use_file_log] to [{cls._instance.use_file_log}]")
 
             return cls._instance
@@ -146,16 +146,17 @@ class Logger():
                 current_sys_time = time.strftime(
                     "%Y_%m_%d_%H_%M", time.localtime())
                 # Generate log file directory
-                logs_directory = os.path.join(
+                self.logs_directory = os.path.join(
                     package_directory, 'logs', current_sys_time)
                 # Create file log directory
-                if not os.path.exists(logs_directory):
-                    os.makedirs(logs_directory)
+                if not os.path.exists(self.logs_directory):
+                    os.makedirs(self.logs_directory)
                 # Generate log file name
                 file_name = f"{caller_file_name}.log"
-                full_path_file_name = os.path.join(logs_directory, file_name)
+                full_path_file_name = os.path.join(
+                    self.logs_directory, file_name)
                 # Log
-                self._logger.info(
+                self._logger.debug(
                     f"Log file will be saved to: \n{full_path_file_name}")
                 # Add file logger
                 self._logger.add(
@@ -170,7 +171,7 @@ class Logger():
                 print(f"Failed to add file logger: {e}")
 
         Logger._initialized = True
-        self.log_info("Logger initialized.")
+        self.log_debug("Logger initialized.")
 
     def find_package_directory(self, current_directory=os.path.dirname(os.path.abspath(__file__))):
         while True:
@@ -183,25 +184,62 @@ class Logger():
         return f'Logger, console_log_level={self.console_log_level}, use_file_log={self.use_file_log})'
 
     def log_trace(self, message, *args, **kwargs):
-        self._logger.trace(message, *args, **kwargs)
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(colors=True).trace(message, *args, **kwargs)
+        else:
+            self._logger.trace(message, *args, **kwargs)
 
     def log_debug(self, message, *args, **kwargs):
-        self._logger.debug(message, *args, **kwargs)
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(colors=True).debug(message, *args, **kwargs)
+        else:
+            self._logger.debug(message, *args, **kwargs)
 
     def log_info(self, message, *args, **kwargs):
-        self._logger.info(message, *args, **kwargs)
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(colors=True).info(message, *args, **kwargs)
+        else:
+            self._logger.info(message, *args, **kwargs)
 
     def log_success(self, message, *args, **kwargs):
-        self._logger.success(message, *args, **kwargs)
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(colors=True).success(message, *args, **kwargs)
+        else:
+            self._logger.success(message, *args, **kwargs)
 
     def log_warning(self, message, *args, **kwargs):
-        self._logger.warning(message, *args, **kwargs)
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(colors=True).warning(message, *args, **kwargs)
+        else:
+            self._logger.warning(message, *args, **kwargs)
 
-    def log_error(self, message,*args, **kwargs):
-        self._logger.opt(exception=True).error(message, *args, **kwargs)
+    def log_error(self, message, *args, **kwargs):
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(exception=True, colors=True).error(
+                message, *args, **kwargs)
+        else:
+            self._logger.opt(exception=True).error(message, *args, **kwargs)
 
     def log_critical(self, message, *args, **kwargs):
-        self._logger.opt(exception=True).critical(message, *args, **kwargs)
+        specific_format = kwargs.get(
+            'specific_format', False)
+        if specific_format:
+            self._logger.opt(exception=True, colors=True).critical(
+                message, *args, **kwargs)
+        else:
+            self._logger.opt(exception=True).critical(message, *args, **kwargs)
 
     def log_exception(self, message, *args, **kwargs):
         self._logger.exception(message, *args, **kwargs)
