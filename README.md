@@ -1,12 +1,15 @@
 # auro_utils
 
-Auro Utils is a utility package offering various practical supports for the Auromix application, such as enhanced logging capabilities and more.
+Auro Utils is a utility toolkit, providing enhanced logging, performance profiling, etc.
 
 ## Install
+
 ### Install from pip
+
 ```bash
 pip install auro_utils
 ```
+
 ### Install from source
 
 ```bash
@@ -32,7 +35,7 @@ You can also find detailed examples in the `examples` folder.
 cd auro_utils/examples
 ```
 
-## Logger
+## Loggers
 
 ### logger
 
@@ -44,6 +47,8 @@ my_logger = Logger()
 my_logger.log_info("This is a info log test.")
 ```
 
+![logger_cmd](/assets/images/loggers/logger_cmd.png)
+
 ### classic logger
 
 Classic logger is a class that can be used to log messages to the console and to a file. It is a wrapper around the standard python logging module.
@@ -53,6 +58,24 @@ from auro_utils.loggers.logger_classic import Logger
 my_logger = Logger()
 my_logger.log_info("This is a info log test.")
 ```
+
+## Profilers
+
+### profiler
+
+Decorator for profiling and analyzing performance of functions. It is a wrapper around yappi.
+
+```python
+from auro_utils.profilers.profiler import auro_profiler
+@auro_profiler
+def your_function_code():
+    import time
+    time.sleep(2)
+```
+
+![profiler_cmd](/assets/images/profilers/profiler_cmd.png)
+
+![profiler_web](/assets/images/profilers/profile_results.png)
 
 ## Troubleshooting
 

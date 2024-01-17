@@ -187,6 +187,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(colors=True).trace(message, *args, **kwargs)
         else:
             self._logger.trace(message, *args, **kwargs)
@@ -195,6 +196,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(colors=True).debug(message, *args, **kwargs)
         else:
             self._logger.debug(message, *args, **kwargs)
@@ -203,6 +205,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(colors=True).info(message, *args, **kwargs)
         else:
             self._logger.info(message, *args, **kwargs)
@@ -211,6 +214,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(colors=True).success(message, *args, **kwargs)
         else:
             self._logger.success(message, *args, **kwargs)
@@ -219,6 +223,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(colors=True).warning(message, *args, **kwargs)
         else:
             self._logger.warning(message, *args, **kwargs)
@@ -227,6 +232,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(exception=True, colors=True).error(
                 message, *args, **kwargs)
         else:
@@ -236,6 +242,7 @@ class Logger():
         specific_format = kwargs.get(
             'specific_format', False)
         if specific_format:
+            kwargs.pop('specific_format')
             self._logger.opt(exception=True, colors=True).critical(
                 message, *args, **kwargs)
         else:
