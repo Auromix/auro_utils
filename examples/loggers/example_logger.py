@@ -8,10 +8,14 @@ from auro_utils.loggers.logger import Logger
 # If use_file_log is True, log file will be saved to "logs" folder
 my_logger = Logger(console_log_level="debug", use_file_log=True)
 
+# Log trace
+my_logger.log_trace("This is a trace log test.")
 # Log debug
-my_logger.log_info("This is a debug log test.")
+my_logger.log_debug("This is a debug log test.")
 # Log info
 my_logger.log_info("This is an info log test.")
+# Log success
+my_logger.log_success("This is a success log test.")
 # Log warning
 my_logger.log_warning("This is a warning log test.")
 # Log error
