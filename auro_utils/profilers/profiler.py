@@ -52,9 +52,7 @@ class AuroProfiler:
     _main_start_time = None
     _main_count_time = None
     _profiled_functions = []
-    _logger = Logger(console_log_level="debug")
-    # Warning@Herman Ye: The logger object needs to be created outside the class
-    # to avoid being destroyed before the exit handler
+    _logger = None
 
     def __init__(self, function, *args, **kwargs):
         """Initialize the profiler.
@@ -77,11 +75,7 @@ class AuroProfiler:
             # Register the exit handler
             atexit.register(self.exit_handler)
             sys.excepthook = self.analysis_excepthook
-            # Generate the file full path
-            # Info@Herman Ye: profile_file_name is the name of the profiling results file
-            profile_file_name = kwargs.get(
-                'profile_file_name', 'profiler_results')
-            AuroProfiler._file_full_path = f"{AuroProfiler._logger.logs_directory}/{profile_file_name}.pstats"
+
             # Set profiler clock type
             # Info@Herman Ye: Clock_type can be "wall" or "cpu"
             # Warning@Herman Ye: Clock_type must be set in the first call of the profiler
@@ -93,6 +87,13 @@ class AuroProfiler:
     def __call__(self, *args, **kwargs):
         """Run the function and get the simple time profiling results.
         """
+        # Initialize the logger
+        # Warning@Herman Ye: The logger in profiler should be initialized after the logger in the main function
+        # to avoid the conflict of the log file path.
+        if AuroProfiler._logger is None:
+            AuroProfiler._logger = Logger(console_log_level="debug")
+            AuroProfiler._file_full_path = f"{AuroProfiler._logger.logs_directory}/profiler_results.pstats"
+        # Log
         AuroProfiler._logger.log_trace(
             f"Profiling function {self.function.__qualname__}...")
         # Start the profiler
@@ -101,6 +102,7 @@ class AuroProfiler:
         result = self.function(*args, **kwargs)
         # Stop the profiler
         yappi.stop()
+        # Log
         AuroProfiler._logger.log_trace(
             f"Profiling function {self.function.__qualname__} finished.")
         # Get the function profiling results
