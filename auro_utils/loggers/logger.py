@@ -119,7 +119,7 @@ class Logger():
         # Try to remove the default handler
         try:
             self._logger.remove(0)
-        except ValueError:
+        except Exception:
             # ignore the error if the handler does not exist
             pass
             
