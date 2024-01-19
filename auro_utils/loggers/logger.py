@@ -116,7 +116,13 @@ class Logger():
                 "Console log level should be one of [trace, debug, info, success, warning, error, critical]")
 
         # Remove default logger
-        self._logger.remove(0)
+        # Try to remove the default handler
+        try:
+            loguru_logger.remove(0)
+        except ValueError:
+            # ignore the error if the handler does not exist
+            pass
+            
         # Add console logger
         try:
             self._logger.add(
