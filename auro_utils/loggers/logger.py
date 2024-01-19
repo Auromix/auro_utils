@@ -118,7 +118,7 @@ class Logger():
         # Remove default logger
         # Try to remove the default handler
         try:
-            loguru_logger.remove(0)
+            self._logger.remove(0)
         except ValueError:
             # ignore the error if the handler does not exist
             pass
