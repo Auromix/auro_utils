@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-# Copyright © 2023 Auromix.                                                   #
+# Copyright © 2023-2024 Auromix.                                              #
 #                                                                             #
 # Licensed under the Apache License, Version 2.0 (the "License");             #
 # You may not use this file except in compliance with the License.            #
@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and         #
 # limitations under the License.                                              #
 #                                                                             #
-# Description: Classic logger class for console and file log.                 #
+# Description: Classic logger class for console and file.                     #
 # Author: Herman Ye                                                           #
 ###############################################################################
 
@@ -52,17 +52,17 @@ class Logger():
             cls._instance.log_warning(
                 f"{cls._instance.logger_name} already exists!")
             cls._instance.log_info(
-                f"Set [console_log_level] to [{cls._instance.console_log_level}]")
+                f"Set [log_level] to [{cls._instance.log_level}]")
             cls._instance.log_info(
                 f"Set [use_file_log] to [{cls._instance.use_file_log}]")
 
             return cls._instance
 
-    def __init__(self, console_log_level="info", use_file_log=True):
+    def __init__(self, log_level="info", use_file_log=True):
         """Init logger.
 
         Args:
-            console_log_level: console log level, should be one of [debug, info, warning, error, critical].
+            log_level: console log level, should be one of [debug, info, warning, error, critical].
             use_file_log: whether to use file log.
 
         Returns:
@@ -85,7 +85,7 @@ class Logger():
             os.path.basename(caller_module.__file__))[0]
 
         # Get parameters
-        self.console_log_level = console_log_level
+        self.log_level = log_level
         self.use_file_log = use_file_log
         # Get logger
         self.logger_name = f"{caller_file_name}_{__name__}"
@@ -110,15 +110,15 @@ class Logger():
         # Set console formatter
         console_handler.setFormatter(console_formatter)
         # Set console handler log level
-        if self.console_log_level == "debug":
+        if self.log_level == "debug":
             console_handler.setLevel(logging.DEBUG)
-        elif self.console_log_level == "info":
+        elif self.log_level == "info":
             console_handler.setLevel(logging.INFO)
-        elif self.console_log_level == "warning":
+        elif self.log_level == "warning":
             console_handler.setLevel(logging.WARNING)
-        elif self.console_log_level == "error":
+        elif self.log_level == "error":
             console_handler.setLevel(logging.ERROR)
-        elif self.console_log_level == "critical":
+        elif self.log_level == "critical":
             console_handler.setLevel(logging.CRITICAL)
         else:
             raise ValueError(
@@ -152,7 +152,7 @@ class Logger():
         self.log_info(f"{self.logger_name} initialized.")
 
     def __repr__(self):
-        return f'Logger(name={self.logger_name}, console_log_level={self.console_log_level}, use_file_log={self.use_file_log})'
+        return f'Logger(name={self.logger_name}, log_level={self.log_level}, use_file_log={self.use_file_log})'
 
     def log_debug(self, txt: str, *args, **kwargs):
         self.logger.debug(txt, *args, **kwargs)
@@ -170,4 +170,3 @@ class Logger():
     def log_critical(self, txt: str, exc_info=True, stack_info=True, *args, **kwargs):
         self.logger.critical(txt, exc_info=exc_info,
                              stack_info=stack_info, *args, **kwargs)
-

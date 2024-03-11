@@ -30,7 +30,7 @@ import functools
 import matplotlib.pyplot as plt
 import yappi
 from auro_utils.loggers.logger import Logger
-# auro_logger = Logger(console_log_level="debug")
+# auro_logger = Logger(log_level="debug")
 
 
 class AuroProfiler:
@@ -91,8 +91,10 @@ class AuroProfiler:
         # Warning@Herman Ye: The logger in profiler should be initialized after the logger in the main function
         # to avoid the conflict of the log file path.
         if AuroProfiler._logger is None:
-            AuroProfiler._logger = Logger(console_log_level="debug")
+            AuroProfiler._logger = Logger(log_level="debug")
             AuroProfiler._file_full_path = f"{AuroProfiler._logger.logs_directory}/profiler_results.pstats"
+            if not os.path.exists(AuroProfiler._logger.logs_directory):
+                os.makedirs(AuroProfiler._logger.logs_directory)
         # Log
         AuroProfiler._logger.log_trace(
             f"Profiling function {self.function.__qualname__}...")

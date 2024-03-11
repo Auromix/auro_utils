@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###############################################################################
-# Copyright © 2023 Auromix.                                                   #
+# Copyright © 2023-2024 Auromix.                                              #
 #                                                                             #
 # Licensed under the Apache License, Version 2.0 (the "License");             #
 # You may not use this file except in compliance with the License.            #
@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and         #
 # limitations under the License.                                              #
 #                                                                             #
-# Description: Loguru logger class for console and file log.                  #
+# Description: Logger class for console and file.                             #
 # Author: Herman Ye                                                           #
 ###############################################################################
 
@@ -54,106 +54,146 @@ class Logger():
             return cls._instance
         # If the class instance is already created, return the created one
         else:
-            cls._instance.log_debug(
+            cls._instance.log_trace(
                 "Logger already exists! Return the existing one.")
-            cls._instance.log_debug(
-                f"Set [console_log_level] to [{cls._instance.console_log_level}]")
-            cls._instance.log_debug(
-                f"Set [use_file_log] to [{cls._instance.use_file_log}]")
+            cls._instance.log_trace(
+                f"[log_level] = [{cls._instance.log_level}]")
+            if cls._instance.use_file_log:
+                cls._instance.log_trace(
+                    f"[log_path] = [{cls._instance.log_path}]")
 
             return cls._instance
 
-    def __init__(self, console_log_level="info", use_file_log=True):
+    def __init__(self, log_level: str = "info",
+                 use_file_log: bool = False,
+                 log_path: str = None,
+                 serialize: bool = False
+                 ):
         """Init logger.
 
         Args:
-            console_log_level: console log level, should be one of [debug, info, warning, error, critical].
-            use_file_log: whether to use file log.
-
-        Returns:
-            None
-
+            log_level (str, optional):
+                Log level. Defaults to "info".
+                Options: [trace, debug, info, success, warning, error, critical].
+            use_file_log (bool, optional):
+                Whether to use file log. Defaults to False.
+            log_path (str, optional):
+                Log path. Defaults to None.
+            serialize (bool, optional):
+                Whether to serialize the log. Defaults to False.
         """
         # If class is already initialized, skip the init
         if Logger._initialized:
             return
+
         # Init loguru logger
         import loguru
         self._logger = loguru.logger
 
         # Init default parameters
-        self.console_log_level = console_log_level
+        self.log_level = log_level
         self.use_file_log = use_file_log
+        self.log_path = log_path
+        self.serialize = serialize
+        self._default_message_tag = None
+        self.message_tag = None
         self.logger_level = "TRACE"
         self.diagnose = False
         self.backtrace = False
-        self.serialize = True
-        if self.console_log_level == "trace":
+        self.enqueue = True
+
+        # Get caller file
+        caller_file = inspect.stack()[1].filename
+        caller_file_name = os.path.splitext(
+            os.path.basename(caller_file))[0]
+
+        # Get the directory of the script which calls this function
+        script_directory = os.path.dirname(
+            os.path.abspath(caller_file))
+
+        # Get the top-level package directory
+        package_directory = self.find_package_directory(
+            script_directory)
+
+        # Get current time
+        current_sys_time = time.strftime(
+            "%Y_%m_%d_%H_%M", time.localtime())
+        # Get default logs directory
+        self.logs_directory = os.path.join(
+            package_directory, 'logs', current_sys_time)
+
+        if self.log_level == "trace":
             self.logger_level = "TRACE"
             self.diagnose = True
             self.backtrace = True
-        elif self.console_log_level == "debug":
+        elif self.log_level == "debug":
             self.logger_level = "DEBUG"
             self.diagnose = True
             self.backtrace = True
-        elif self.console_log_level == "info":
+        elif self.log_level == "info":
             self.logger_level = "INFO"
             self.backtrace = True
-        elif self.console_log_level == "success":
+        elif self.log_level == "success":
             self.logger_level = "SUCCESS"
             self.backtrace = True
-        elif self.console_log_level == "warning":
+        elif self.log_level == "warning":
             self.logger_level = "WARNING"
             self.backtrace = True
-        elif self.console_log_level == "error":
+        elif self.log_level == "error":
             self.logger_level = "ERROR"
             self.backtrace = True
-        elif self.console_log_level == "critical":
+        elif self.log_level == "critical":
             self.logger_level = "CRITICAL"
             self.backtrace = True
         else:
             raise ValueError(
-                "Console log level should be one of [trace, debug, info, success, warning, error, critical]")
+                "Log level should be one of [trace, debug, info, success, warning, error, critical]")
 
         # Remove default logger
         # Try to remove the default handler
         try:
             self._logger.remove(0)
         except Exception:
-            # ignore the error if the handler does not exist
+            # Ignore the error if the handler does not exist
             pass
-            
+
         # Add console logger
         try:
             self._logger.add(
                 sink=sys.stdout,
                 level=self.logger_level,
-                format="<d><green><b>TIME</b> {time:HH:mm:ss.SSS}</green> | <blue><b>LINE</b> {file}:{name}:{module}:{function}:{line}</blue></d>\n<i><level>{level}: {message}</level></i>",
+                format="<d><green><b>TIME</b> {time:YYYY-MM-DD HH:mm:ss.SSS} | <b>PID</b> {process}:{thread} | <b>TAG</b> {extra[tag]}</green> </d>  \n<level>[{level}] {message}</level>",
                 diagnose=self.diagnose,
                 backtrace=self.backtrace,
+                enqueue=self.enqueue,
             )
+            # Add tag
+            self._default_message_tag = f"{caller_file_name}"
+            self.message_tag = self._default_message_tag
+            self._logger_with_bind = self._logger.bind(tag=self.message_tag)
         except Exception as e:
             print(f"Failed to add console logger: {e}")
 
         # Add file logger
         if self.use_file_log:
+
+            # Get log path
+            if self.log_path is not None:
+                # Path check
+                if not os.path.exists(self.log_path):
+                    self.log_warning(
+                        f"Log path does not exist: {self.log_path}")
+                    os.makedirs(self.log_path,)
+                    self.log_success(f"Log path created: {self.log_path}")
+
+            else:
+                self.log_path = package_directory
+
+            # Generate log file directory
+            self.logs_directory = os.path.join(
+                self.log_path, 'logs', current_sys_time)
+
             try:
-                # Get caller file
-                caller_file = inspect.stack()[1].filename
-                caller_file_name = os.path.splitext(
-                    os.path.basename(caller_file))[0]
-                # Get the directory of the script which calls this function
-                script_directory = os.path.dirname(
-                    os.path.abspath(caller_file))
-                # Get the top-level package directory
-                package_directory = self.find_package_directory(
-                    script_directory)
-                # Get current time
-                current_sys_time = time.strftime(
-                    "%Y_%m_%d_%H_%M", time.localtime())
-                # Generate log file directory
-                self.logs_directory = os.path.join(
-                    package_directory, 'logs', current_sys_time)
                 # Create file log directory
                 if not os.path.exists(self.logs_directory):
                     os.makedirs(self.logs_directory)
@@ -162,7 +202,7 @@ class Logger():
                 full_path_file_name = os.path.join(
                     self.logs_directory, file_name)
                 # Log
-                self._logger.debug(
+                self.log_debug(
                     f"Log file will be saved to: \n{full_path_file_name}")
                 # Add file logger
                 self._logger.add(
@@ -172,6 +212,7 @@ class Logger():
                     serialize=True,
                     diagnose=self.diagnose,
                     backtrace=self.backtrace,
+                    enqueue=self.enqueue,
                 )
             except Exception as e:
                 print(f"Failed to add file logger: {e}")
@@ -186,73 +227,113 @@ class Logger():
                 return current_directory
             current_directory = parent_directory
 
+    def get_log_path(self):
+        return self.log_path
+
+    def check_exception(self, *args, **kwargs):
+        for arg in args:
+            if isinstance(arg, Exception):
+                return True
+
+        for key, value in kwargs.items():
+            if isinstance(value, Exception):
+                return True
+        return False
+
     def __repr__(self):
-        return f'Logger, console_log_level={self.console_log_level}, use_file_log={self.use_file_log})'
+        if self.use_file_log:
+            return f'Logger, log_level={self.log_level}, log_path={self.log_path})'
+        return f'Logger, log_level={self.log_level})'
 
     def log_trace(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(colors=True).trace(message, *args, **kwargs)
-        else:
-            self._logger.trace(message, *args, **kwargs)
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).trace(
+                message, *args, **kwargs)
+            return
+
+        self._logger_with_bind.trace(message, *args, **kwargs)
 
     def log_debug(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(colors=True).debug(message, *args, **kwargs)
-        else:
-            self._logger.debug(message, *args, **kwargs)
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).debug(
+                message, *args, **kwargs)
+            return
+
+        self._logger_with_bind.debug(message, *args, **kwargs)
 
     def log_info(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(colors=True).info(message, *args, **kwargs)
-        else:
-            self._logger.info(message, *args, **kwargs)
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).info(
+                message, *args, **kwargs)
+            return
+
+        self._logger_with_bind.info(message, *args, **kwargs)
 
     def log_success(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(colors=True).success(message, *args, **kwargs)
-        else:
-            self._logger.success(message, *args, **kwargs)
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).success(
+                message, *args, **kwargs)
+            return
+
+        self._logger_with_bind.success(message, *args, **kwargs)
 
     def log_warning(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(colors=True).warning(message, *args, **kwargs)
-        else:
-            self._logger.warning(message, *args, **kwargs)
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).warning(
+                message, *args, **kwargs)
+            return
+
+        self._logger_with_bind.warning(message, *args, **kwargs)
 
     def log_error(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(exception=True, colors=True).error(
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).error(
                 message, *args, **kwargs)
+            return
+
+        if self.check_exception(*args, **kwargs):
+            self._logger_with_bind.opt(exception=True).error(
+                message, *args, **kwargs)
+            return
         else:
-            self._logger.opt(exception=True).error(message, *args, **kwargs)
+            self._logger_with_bind.error(message, *args, **kwargs)
+            return
 
     def log_critical(self, message, *args, **kwargs):
-        specific_format = kwargs.get(
-            'specific_format', False)
-        if specific_format:
-            kwargs.pop('specific_format')
-            self._logger.opt(exception=True, colors=True).critical(
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).critical(
                 message, *args, **kwargs)
+            return
+
+        if self.check_exception(*args, **kwargs):
+            self._logger_with_bind.opt(exception=True).critical(
+                message, *args, **kwargs)
+            return
         else:
-            self._logger.opt(exception=True).critical(message, *args, **kwargs)
+            self._logger_with_bind.critical(
+                message, *args, **kwargs)
+            return
 
     def log_exception(self, message, *args, **kwargs):
-        self._logger.exception(message, *args, **kwargs)
+        self.message_tag = kwargs.get('tag', self._default_message_tag)
+
+        if kwargs.pop('specific_format', False):
+            self._logger_with_bind.opt(colors=True).exception(
+                message, *args, **kwargs)
+            return
+
+        self._logger_with_bind.exception(message, *args, **kwargs)

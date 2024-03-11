@@ -5,7 +5,7 @@ from auro_utils.loggers.logger import Logger
 
 class TestLogger(unittest.TestCase):
     def setUp(self):
-        self.logger = Logger(console_log_level="debug", use_file_log=False)
+        self.logger = Logger(log_level="debug", use_file_log=False)
 
     def test_log_trace(self):
         try:
@@ -63,7 +63,7 @@ class TestLogger(unittest.TestCase):
     def test_singleton_pattern(self):
         try:
             logger_singleton_pattern_test = Logger(
-                console_log_level="warning", use_file_log=False)
+                log_level="warning", use_file_log=False)
             self.assertEqual(self.logger, logger_singleton_pattern_test)
         except Exception as e:
             self.fail(f"test_singleton_pattern failed with {e}")
