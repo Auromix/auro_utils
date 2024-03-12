@@ -282,8 +282,6 @@ class Logger():
             self._logger.bind(tag=self.message_tag).opt(colors=True).success(
                 message, *args, **kwargs)
             return
-        print(f"args: {args}")
-        print(f"kwargs: {kwargs}")
         self._logger.bind(tag=self.message_tag).success(
             message, *args, **kwargs)
 
