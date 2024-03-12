@@ -20,6 +20,7 @@
 # Author: Herman Ye                                                           #
 ###############################################################################
 
+
 """
 This module defines a Logger class that uses the loguru library for logging.
 The Logger class is designed as a singleton, meaning only one instance of this class can exist at a time.
@@ -170,7 +171,7 @@ class Logger():
             # Add tag
             self._default_message_tag = f"{caller_file_name}"
             self.message_tag = self._default_message_tag
-            self._logger_with_bind = self._logger.bind(tag=self.message_tag)
+
         except Exception as e:
             print(f"Failed to add console logger: {e}")
 
@@ -246,94 +247,98 @@ class Logger():
         return f'Logger, log_level={self.log_level})'
 
     def log_trace(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
-
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).trace(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).trace(
                 message, *args, **kwargs)
             return
 
-        self._logger_with_bind.trace(message, *args, **kwargs)
+        self._logger.bind(tag=self.message_tag).trace(message, *args, **kwargs)
 
     def log_debug(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).debug(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).debug(
                 message, *args, **kwargs)
             return
 
-        self._logger_with_bind.debug(message, *args, **kwargs)
+        self._logger.bind(tag=self.message_tag).debug(message, *args, **kwargs)
 
     def log_info(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).info(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).info(
                 message, *args, **kwargs)
             return
 
-        self._logger_with_bind.info(message, *args, **kwargs)
+        self._logger.bind(tag=self.message_tag).info(message, *args, **kwargs)
 
     def log_success(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).success(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).success(
                 message, *args, **kwargs)
             return
-
-        self._logger_with_bind.success(message, *args, **kwargs)
+        print(f"args: {args}")
+        print(f"kwargs: {kwargs}")
+        self._logger.bind(tag=self.message_tag).success(
+            message, *args, **kwargs)
 
     def log_warning(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).warning(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).warning(
                 message, *args, **kwargs)
             return
 
-        self._logger_with_bind.warning(message, *args, **kwargs)
+        self._logger.bind(tag=self.message_tag).warning(
+            message, *args, **kwargs)
 
     def log_error(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).error(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).error(
                 message, *args, **kwargs)
             return
 
         if self.check_exception(*args, **kwargs):
-            self._logger_with_bind.opt(exception=True).error(
+            self._logger.bind(tag=self.message_tag).opt(exception=True).error(
                 message, *args, **kwargs)
             return
         else:
-            self._logger_with_bind.error(message, *args, **kwargs)
+            self._logger.bind(tag=self.message_tag).error(
+                message, *args, **kwargs)
             return
 
     def log_critical(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).critical(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).critical(
                 message, *args, **kwargs)
             return
 
         if self.check_exception(*args, **kwargs):
-            self._logger_with_bind.opt(exception=True).critical(
+            self._logger.bind(tag=self.message_tag).opt(exception=True).critical(
                 message, *args, **kwargs)
             return
         else:
-            self._logger_with_bind.critical(
+            self._logger.bind(tag=self.message_tag).critical(
                 message, *args, **kwargs)
             return
 
     def log_exception(self, message, *args, **kwargs):
-        self.message_tag = kwargs.get('tag', self._default_message_tag)
+        self.message_tag = kwargs.pop('tag', self._default_message_tag)
 
         if kwargs.pop('specific_format', False):
-            self._logger_with_bind.opt(colors=True).exception(
+            self._logger.bind(tag=self.message_tag).opt(colors=True).exception(
                 message, *args, **kwargs)
             return
 
-        self._logger_with_bind.exception(message, *args, **kwargs)
+        self._logger.bind(tag=self.message_tag).exception(
+            message, *args, **kwargs)
