@@ -10,6 +10,9 @@ with open('README.md') as readme_file:
 requirements = [
     'colorlog ',
     'loguru',
+    'toml',
+    'h5py',
+    'numpy',
 ]
 
 test_requirements = ['pytest>=3', ]
