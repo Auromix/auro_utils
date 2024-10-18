@@ -13,6 +13,8 @@ requirements = [
     'toml',
     'h5py',
     'numpy',
+    'yappi',
+    'gprof2dot',
 ]
 
 test_requirements = ['pytest>=3', ]
@@ -41,6 +43,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/Hermanye996/auro_utils',
-    version='0.0.5',
+    version='0.0.6',
     zip_safe=False,
 )
