@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from auro_utils.loggers.logger import Logger
+from auro_utils import Logger
 
 
 class TestLogger(unittest.TestCase):

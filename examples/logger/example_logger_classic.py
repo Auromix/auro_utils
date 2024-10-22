@@ -1,5 +1,5 @@
 # Import Logger
-from auro_utils.loggers.logger_classic import Logger
+from auro_utils.logger.logger_classic import Logger
 
 # Instantiate logger
 # Default console log level is "info"

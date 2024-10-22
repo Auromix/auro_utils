@@ -1,4 +1,4 @@
-from auro_utils.loggers.logger import Logger
+from auro_utils import Logger
 
 
 # Instantiate logger

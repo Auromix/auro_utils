@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from auro_utils.maths import (
+from auro_utils.math.transform import (
     xyzw_to_wxyz,
     wxzy_to_xyzw,
     position_and_orientation_to_pose,
@@ -34,3 +34,4 @@ def test_pose_to_position_and_orientation():
 
 if __name__ == "__main__":
     pytest.main()
+

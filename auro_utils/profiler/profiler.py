@@ -29,7 +29,7 @@ import pstats
 import functools
 import matplotlib.pyplot as plt
 import yappi
-from auro_utils.loggers.logger import Logger
+from auro_utils import Logger
 # auro_logger = Logger(log_level="debug")
 
 

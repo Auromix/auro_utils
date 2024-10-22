@@ -1,5 +1,5 @@
 import unittest
-from auro_utils.profilers.profiler import auro_profiler
+from auro_utils.profiler import auro_profiler
 import time
 
 

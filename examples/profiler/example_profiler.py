@@ -1,5 +1,5 @@
 # Import the profiler
-from auro_utils.profilers.profiler import auro_profiler
+from auro_utils.profiler import auro_profiler
 
 
 # Use the profiler as a decorator
@@ -8,6 +8,7 @@ from auro_utils.profilers.profiler import auro_profiler
 def your_function_code():
     # Simulate your time-consuming operations
     import time
+
     time.sleep(2)
 
 
@@ -21,12 +22,14 @@ class YourClass:
     def your_static_method():
         # Simulate your time-consuming operations
         import time
+
         time.sleep(1)
 
     @auro_profiler
     def your_method(self):
         # Simulate your time-consuming operations
         import time
+
         time.sleep(0.5)
 
 

@@ -1,119 +1,117 @@
-# auro_utils
+[![Official](https://img.shields.io/badge/Official%20-Auromix-blue?style=flat&logo=world&logoColor=white)](https://github.com/Auromix) &nbsp;
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04-green)](https://ubuntu.com/) &nbsp;
+[![LICENSE](https://img.shields.io/badge/license-Apache--2.0-informational)](https://github.com/Auromix/auro_joystick/blob/main/LICENSE) &nbsp;
+[![GitHub Repo stars](https://img.shields.io/github/stars/Auromix/auro_utils?style=social)](https://github.com/Auromix/auro_utils/stargazers) &nbsp;
+[![Twitter Follow](https://img.shields.io/twitter/follow/Hermanye233?style=social)](https://twitter.com/Hermanye233) &nbsp;
+
+# 🛠️ Auro Utils
 
 Auro Utils is a utility toolkit, providing enhanced logging, performance profiling, etc.
 
-## Install
+## ⚙️ Installation
 
-### Install from pip
+To install Auro Utils, you can use one of the following methods:
 
 ```bash
+# Install from PyPI
 pip install auro_utils
 ```
 
-### Install from source
-
 ```bash
+# Install from the current directory (local development)
 git clone https://github.com/Auromix/auro_utils
 cd auro_utils
 pip install -e .
 ```
 
-## Test
+## 🔥 Quickstart
 
-```bash
-cd auro_utils
-python3 -m pytest -v .
-```
-
-## Usage
-
-Following are some simplified examples of utilities offered by this package.
-
-You can also find detailed examples in the `examples` folder.
-
-```bash
-cd auro_utils/examples
-```
-
-## Loggers
+You can find detailed examples for the project in the `examples` directory of the repository.
 
 ### logger
 
 Logger is a class that can be used to log messages to the console and to a file. It is a wrapper around loguru.
 
 ```python
-from auro_utils.loggers.logger import Logger
+from auro_utils import Logger
 my_logger = Logger()
 my_logger.log_info("This is a info log test.")
 ```
 
-![logger_cmd](/assets/images/loggers/logger_cmd.png)
-
-### classic logger
-
-Classic logger is a class that can be used to log messages to the console and to a file. It is a wrapper around the standard python logging module.
-
-```python
-from auro_utils.loggers.logger_classic import Logger
-my_logger = Logger()
-my_logger.log_info("This is a info log test.")
-```
-
-## Profilers
+![logger_cmd](/assets/images/logger/logger_cmd.png)
 
 ### profiler
 
 Decorator for profiling and analyzing performance of functions. It is a wrapper around yappi.
 
 ```python
-from auro_utils.profilers.profiler import auro_profiler
+# Import the profiler
+from auro_utils.profiler import auro_profiler
+
+
+# Use the profiler as a decorator
 @auro_profiler
+# Your code here
 def your_function_code():
+    # Simulate your time-consuming operations
     import time
+
     time.sleep(2)
 ```
 
-![profiler_cmd](/assets/images/profilers/profiler_cmd.png)
+![profiler_cmd](/assets/images/profiler/profiler_cmd.png)
 
-![profiler_web](/assets/images/profilers/profile_results.png)
+![profiler_web](/assets/images/profiler/profile_results.png)
 
-## IO
+### manager
 
-### file_operator
-
-Functions in file_operator can be used to read and write files and process paths.
+Functions in manager can be used to read and write files and process paths.
 
 ```python
-# Get the project top level directory
-from auro_utils.io.file_operator import get_project_top_level_dir
-project_top_dir=get_project_top_level_dir()
-print(project_top_dir)
+# Load the configuration from the specified TOML file
+loaded_config = au.load_config(
+    config_file_path, relative_to=home_dir, file_type="toml"
+)
 
-# Read a toml file
-from auro_utils.io.file_operator import read_toml
-config = read_toml(project_top_dir+ "/config.toml")
-print(config)
-
+# Print the loaded configuration data
+print("Loaded configuration:", loaded_config)
 ```
 
-## Install
+## 🧪 Test
 
 ```bash
-pip install auro_utils
+cd auro_utils
+python3 -m pytest -v .
 ```
 
-## Troubleshooting
+## 🧑‍💻 Documentation
 
-### ModuleNotFoundError
+For comprehensive documentation, please refer to the comments within the source code and examples.
 
-Make sure you have installed the package correctly. See [Install](#install) section.
+## 🙋 Troubleshooting
 
-### Want to uninstall
+If you encounter any issues or have questions regarding this package, please contact the maintainers:
 
-```bash
-pip uninstall auro_utils
+- Herman Ye @Auromix (Email: <hermanye233@icloud.com>)
+
+## 📜 License
+
+```text
+Copyright 2023-2024 Herman Ye@Auromix
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+either express or implied. See the License for the specific
+language governing permissions and limitations under the License.
 ```
 
-## Contribute
+## 🏆 Contributing
 
-Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+Contributions are welcome! Please follow the guidelines provided in the repository for contributing.
