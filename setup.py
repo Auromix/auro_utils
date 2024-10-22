@@ -9,6 +9,7 @@ with open("README.md") as readme_file:
 
 requirements = [
     "colorlog ",
+    "rospkg",
     "loguru",
     "toml",
     "h5py",
