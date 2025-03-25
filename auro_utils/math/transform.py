@@ -20,7 +20,7 @@ def xyzw_to_wxyz(
     return [quaternion[3], quaternion[0], quaternion[1], quaternion[2]]
 
 
-def wxzy_to_xyzw(
+def wxyz_to_xyzw(
     quaternion: Union[List[float], np.ndarray]
 ) -> Union[List[float], np.ndarray]:
     """Convert quaternion from [w, x, y, z] to [x, y, z, w].
